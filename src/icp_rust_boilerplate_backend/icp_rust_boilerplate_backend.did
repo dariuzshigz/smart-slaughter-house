@@ -1,0 +1,218 @@
+type Animal = record {
+  id : nat64;
+  weight : float64;
+  status : text;
+  tag_number : text;
+  arrival_time : nat64;
+  slaughterhouse_id : nat64;
+  species : text;
+};
+type CreateMeatProductPayload = record {
+  weight : float64;
+  animal_id : nat64;
+  product_type : text;
+  slaughterhouse_id : nat64;
+  price_per_kg : float64;
+};
+type CreateSlaughterhousePayload = record {
+  contact : text;
+  name : text;
+  email : text;
+  capacity : nat64;
+  location : text;
+};
+type Employee = record {
+  id : nat64;
+  hire_date : nat64;
+  status : text;
+  contact : text;
+  name : text;
+  role : text;
+  certification : text;
+  slaughterhouse_id : nat64;
+};
+type EmployeePayload = record {
+  contact : text;
+  name : text;
+  role : text;
+  certification : text;
+  slaughterhouse_id : nat64;
+};
+type Expense = record {
+  id : nat64;
+  date : nat64;
+  description : text;
+  category : text;
+  slaughterhouse_id : nat64;
+  amount : float64;
+};
+type FinancialMetrics = record {
+  waste_management_costs : float64;
+  maintenance_costs : float64;
+  revenue_by_product : vec record { text; float64 };
+  labor_costs : float64;
+  operating_costs : float64;
+  total_revenue : float64;
+  expenses_by_category : vec record { text; float64 };
+  total_expenses : float64;
+  profit_margin : float64;
+};
+type InventoryAnalytics = record {
+  products_by_status : vec record { text; vec MeatProduct };
+  total_inventory_value : float64;
+  product_counts : vec record { text; nat32 };
+  low_stock_items : vec MeatProduct;
+};
+type MaintenanceAnalytics = record {
+  maintenance_by_type : vec record { text; nat32 };
+  pending_maintenance : vec MaintenanceRecord;
+  total_maintenance_cost : float64;
+  equipment_reliability : vec record { text; float64 };
+  equipment_history : vec record { text; vec MaintenanceRecord };
+};
+type MaintenancePayload = record {
+  equipment_name : text;
+  maintenance_type : text;
+  notes : text;
+  slaughterhouse_id : nat64;
+  estimated_cost : float64;
+  scheduled_date : nat64;
+};
+type MaintenanceRecord = record {
+  id : nat64;
+  status : text;
+  equipment_name : text;
+  cost : float64;
+  date : nat64;
+  next_maintenance_date : nat64;
+  maintenance_type : text;
+  performed_by : text;
+  notes : text;
+  slaughterhouse_id : nat64;
+};
+type MeatProduct = record {
+  id : nat64;
+  weight : float64;
+  status : text;
+  animal_id : nat64;
+  total_price : float64;
+  created_at : nat64;
+  product_type : text;
+  slaughterhouse_id : nat64;
+  price_per_kg : float64;
+};
+type Message = variant {
+  Error : text;
+  InvalidPayload : text;
+  NotFound : text;
+  Success : text;
+};
+type QualityInspection = record {
+  id : nat64;
+  visual_inspection : text;
+  inspection_date : nat64;
+  temperature : float64;
+  animal_id : nat64;
+  ph_level : float64;
+  notes : text;
+  inspector_name : text;
+  passed : bool;
+};
+type QualityInspectionPayload = record {
+  visual_inspection : text;
+  temperature : float64;
+  animal_id : nat64;
+  ph_level : float64;
+  notes : text;
+  inspector_name : text;
+  passed : bool;
+};
+type QualityMetrics = record {
+  total_inspections : nat32;
+  average_ph_level : float64;
+  inspections : vec QualityInspection;
+  average_temperature : float64;
+  passed_inspections : nat32;
+  failure_rate : float64;
+};
+type RecordExpensePayload = record {
+  description : text;
+  category : text;
+  slaughterhouse_id : nat64;
+  amount : float64;
+};
+type RegisterAnimalPayload = record {
+  weight : float64;
+  tag_number : text;
+  slaughterhouse_id : nat64;
+  species : text;
+};
+type Result = variant { Ok : float64; Err : Message };
+type Result_1 = variant { Ok : MeatProduct; Err : Message };
+type Result_10 = variant { Ok : Expense; Err : Message };
+type Result_11 = variant { Ok : Animal; Err : Message };
+type Result_12 = variant { Ok : Employee; Err : Message };
+type Result_13 = variant { Ok : MaintenanceRecord; Err : Message };
+type Result_2 = variant { Ok : Shipment; Err : Message };
+type Result_3 = variant { Ok : Slaughterhouse; Err : Message };
+type Result_4 = variant { Ok : FinancialMetrics; Err : Message };
+type Result_5 = variant { Ok : InventoryAnalytics; Err : Message };
+type Result_6 = variant { Ok : MaintenanceAnalytics; Err : Message };
+type Result_7 = variant { Ok : QualityMetrics; Err : Message };
+type Result_8 = variant { Ok : WasteRecord; Err : Message };
+type Result_9 = variant { Ok : QualityInspection; Err : Message };
+type Shipment = record {
+  id : nat64;
+  status : text;
+  destination : text;
+  temperature_log : vec float64;
+  product_ids : vec nat64;
+  tracking_number : text;
+  expected_delivery : nat64;
+  slaughterhouse_id : nat64;
+  shipping_date : nat64;
+};
+type ShipmentPayload = record {
+  destination : text;
+  product_ids : vec nat64;
+  expected_delivery : nat64;
+  slaughterhouse_id : nat64;
+};
+type Slaughterhouse = record {
+  id : nat64;
+  contact : text;
+  name : text;
+  created_at : nat64;
+  email : text;
+  capacity : nat64;
+  location : text;
+};
+type WasteRecord = record {
+  id : nat64;
+  waste_type : text;
+  cost : float64;
+  disposal_date : nat64;
+  handled_by : text;
+  quantity : float64;
+  slaughterhouse_id : nat64;
+  disposal_method : text;
+};
+service : {
+  calculate_total_expenses : (nat64) -> (Result) query;
+  calculate_total_revenue : (nat64) -> (Result) query;
+  create_meat_product : (CreateMeatProductPayload) -> (Result_1);
+  create_shipment : (ShipmentPayload) -> (Result_2);
+  create_slaughterhouse : (CreateSlaughterhousePayload) -> (Result_3);
+  generate_financial_analytics : (nat64) -> (Result_4) query;
+  get_inventory_analytics : (nat64) -> (Result_5) query;
+  get_maintenance_analytics : (nat64, nat64, nat64) -> (Result_6) query;
+  get_quality_metrics : (nat64, nat64, nat64) -> (Result_7) query;
+  manage_waste_disposal : (nat64, text, float64, text, float64, text) -> (
+      Result_8,
+    );
+  perform_quality_inspection : (QualityInspectionPayload) -> (Result_9);
+  record_expense : (RecordExpensePayload) -> (Result_10);
+  register_animal : (RegisterAnimalPayload) -> (Result_11);
+  register_employee : (EmployeePayload) -> (Result_12);
+  schedule_maintenance : (MaintenancePayload) -> (Result_13);
+}
